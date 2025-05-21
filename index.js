@@ -25,6 +25,7 @@ async function run() {
     const metaBlog = client.db("metaBlog");
     const blogCollection = metaBlog.collection("blogs");
     const wishlist = metaBlog.collection("wishlist");
+    const comments = metaBlog.collection("comments");
 
     // POST A BLOG
     app.post("/post-blog", async (req, res) => {
@@ -44,6 +45,16 @@ async function run() {
     // get all blogs
     app.get("/blogs", async (req, res) => {
       const result = await blogCollection.find().toArray();
+      res.send(result);
+    });
+
+    // recent blogs
+    app.get("/recent-blogs", async (req, res) => {
+      const result = await blogCollection
+        .find()
+        .sort({ _id: -1 })
+        .limit(6)
+        .toArray();
       res.send(result);
     });
 
@@ -98,6 +109,22 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await wishlist.deleteOne(query);
+      res.send(result);
+    });
+
+    // <-----------------------------comments------------------------------------------->
+    // post a comment
+    app.post("/post-comment", async (req, res) => {
+      const comment = req.body;
+      const result = await comments.insertOne(comment);
+      res.send(result);
+    });
+
+    // get comment by blogID
+    app.get("/comment/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { blogId: id };
+      const result = await comments.find(query).toArray();
       res.send(result);
     });
 
