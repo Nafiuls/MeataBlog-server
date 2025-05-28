@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 
 const corsOption = {
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173", "https://funny-douhua-018593.netlify.app"],
   credentials: true,
   optionalSuccessStatus: 200,
 };
@@ -145,8 +145,6 @@ async function run() {
       const email = req.params.email;
       const updatedData = req.body;
       const decodedEmail = req.user?.email;
-      console.log(decodedEmail);
-      console.log(email);
       if (decodedEmail !== email) {
         return res.status(403).send({ message: "Forbidden access" });
       }
